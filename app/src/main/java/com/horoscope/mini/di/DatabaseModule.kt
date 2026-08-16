@@ -1,15 +1,11 @@
 package com.horoscope.mini.di
 
-import android.content.Context
-import androidx.room.Room
-import com.horoscope.mini.data.local.AppDatabase
-import com.horoscope.mini.data.local.dao.HoroscopeDao
-import com.horoscope.mini.data.local.dao.PurchaseDao
-import com.horoscope.mini.data.local.dao.UserDao
+import com.horoscope.mini.data.local.HoroscopeDao
+import com.horoscope.mini.data.local.PurchaseDao
+import com.horoscope.mini.data.local.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -19,20 +15,13 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "horoscope_database"
-        ).build()
-    }
+    fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
 
     @Provides
-    fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
+    @Singleton
+    fun provideHoroscopeDao(database: AppDatabase): HoroscopeDao = database.horoscopeDao()
 
     @Provides
-    fun provideHoroscopeDao(db: AppDatabase): HoroscopeDao = db.horoscopeDao()
-
-    @Provides
-    fun providePurchaseDao(db: AppDatabase): PurchaseDao = db.purchaseDao()
+    @Singleton
+    fun providePurchaseDao(database: AppDatabase): PurchaseDao = database.purchaseDao()
 }

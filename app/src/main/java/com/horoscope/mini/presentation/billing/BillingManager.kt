@@ -1,21 +1,30 @@
-package com.horoscope.mini.billing
+package com.horoscope.mini.presentation.billing
 
 import android.content.Context
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class BillingManager @Inject constructor(context: Context) {
+class BillingManager @Inject constructor(
+    private val context: Context
+) {
     private val billingClient = BillingClient.newBuilder(context)
         .setListener { _, _ -> }
         .enablePendingPurchases()
         .build()
 
     fun startConnection() {
-        billingClient.startConnection(object : BillingClient.BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: com.android.billingclient.api.BillingResult) {}
-            override fun onBillingServiceDisconnected() {}
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // подключено
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // отключено
+            }
         })
     }
 }
