@@ -1,7 +1,7 @@
 package com.horoscope.mini.data.repository
 
-import com.horoscope.mini.data.local.dao.HoroscopeDao
-import com.horoscope.mini.data.local.entity.HoroscopeEntity
+import com.horoscope.mini.data.local.HoroscopeDao
+import com.horoscope.mini.domain.model.HoroscopeItem
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -10,15 +10,11 @@ import javax.inject.Singleton
 class HoroscopeRepository @Inject constructor(
     private val horoscopeDao: HoroscopeDao
 ) {
-    fun getHoroscope(sign: String): Flow<HoroscopeEntity?> {
-        return horoscopeDao.getHoroscope(sign)
-    }
-
-    suspend fun insertHoroscope(horoscope: HoroscopeEntity) {
-        horoscopeDao.insertHoroscope(horoscope)
-    }
-
-    fun getAllHoroscopes(): Flow<List<HoroscopeEntity>> {
+    fun getAllHoroscopes(): Flow<List<HoroscopeItem>> {
         return horoscopeDao.getAllHoroscopes()
+    }
+
+    suspend fun insertHoroscopes(items: List<HoroscopeItem>) {
+        horoscopeDao.insertAll(items)
     }
 }

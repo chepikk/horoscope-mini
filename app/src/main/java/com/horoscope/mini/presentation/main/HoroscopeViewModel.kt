@@ -1,28 +1,32 @@
-package com.horoscope.mini.presentation.main
+package com.horoscope.mini.presentation.horoscope
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.horoscope.mini.data.local.entity.HoroscopeEntity
-import com.horoscope.mini.domain.usecase.GetHoroscopeUseCase
+import com.horoscope.mini.data.repository.HoroscopeRepository
+import com.horoscope.mini.domain.model.HoroscopeItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HoroscopeViewModel @Inject constructor(
-    private val getHoroscopeUseCase: GetHoroscopeUseCase
+    private val repository: HoroscopeRepository
 ) : ViewModel() {
 
-    private val _horoscope = MutableStateFlow<HoroscopeEntity?>(null)
-    val horoscope: StateFlow<HoroscopeEntity?> = _horoscope.asStateFlow()
+    val horoscopes: StateFlow<List<HoroscopeItem>> = repository.getAllHoroscopes()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
-    fun loadHoroscope(sign: String) {
+    fun loadInitialData(items: List<HoroscopeItem>) {
         viewModelScope.launch {
-            getHoroscopeUseCase(sign).collect { result ->
-                _horoscope.value = result
+            if (horoscopes.value.isEmpty()) {
+                repository.insertHoroscopes(items)
             }
         }
     }
