@@ -7,38 +7,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun HoroscopeTabs(
-    viewModel: HoroscopeViewModel,
-    modifier: Modifier = Modifier
-) {
-    val signs = listOf("Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева",
-        "Весы", "Скорпион", "Стрелец", "Козерог", "Водолей", "Рыбы")
-    var selectedTab by remember { mutableStateOf(0) }
+fun HoroscopeTabs(viewModel: HoroscopeViewModel = hiltViewModel()) {
+    val signs = listOf(
+        "Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева",
+        "Весы", "Скорпион", "Стрелец", "Козерог", "Водолей", "Рыбы"
+    )
 
     val horoscope by viewModel.horoscope.collectAsState()
 
-    Column(modifier = modifier) {
-        TabRow(selectedTabIndex = selectedTab) {
-            signs.forEachIndexed { index, sign ->
+    Column {
+        TabRow(selectedTabIndex = 0) {
+            signs.forEach { sign ->
                 Tab(
-                    selected = selectedTab == index,
-                    onClick = {
-                        selectedTab = index
-                        viewModel.loadHoroscope(sign)
-                    },
+                    selected = false,
+                    onClick = { viewModel.loadHoroscope(sign) },
                     text = { Text(sign) }
                 )
             }
         }
 
         horoscope?.let {
-            Text(text = it.text)
-        } ?: Text(text = "Выберите знак зодиака")
+            Text(text = it.text ?: "Гороскоп не найден")
+        } ?: Text("Выберите знак зодиака")
     }
 }
