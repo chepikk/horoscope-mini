@@ -1,0 +1,4 @@
+<resources>
+    <style name="Theme.HoroscopeMini" parent="android:Theme.Material.Light.NoDisplay" />
+</style>
+</resources>
