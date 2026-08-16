@@ -1,36 +1,22 @@
 package com.horoscope.mini.presentation.main
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
 @Composable
-fun HoroscopeTabs(viewModel: HoroscopeViewModel = hiltViewModel()) {
-    val signs = listOf(
-        "Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева",
-        "Весы", "Скорпион", "Стрелец", "Козерог", "Водолей", "Рыбы"
-    )
+fun HoroscopeTabs(viewModel: HoroscopeViewModel) {
+    val horoscopes = viewModel.horoscopes.collectAsState().value
 
-    val horoscope by viewModel.horoscope.collectAsState()
-
-    Column {
-        TabRow(selectedTabIndex = 0) {
-            signs.forEach { sign ->
-                Tab(
-                    selected = false,
-                    onClick = { viewModel.loadHoroscope(sign) },
-                    text = { Text(sign) }
-                )
-            }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        if (horoscopes.isEmpty()) {
+            Text("Загрузка гороскопов...")
+        } else {
+            Text("Гороскопы загружены: ${horoscopes.size} знаков")
         }
-
-        horoscope?.let {
-            Text(text = it.text ?: "Гороскоп не найден")
-        } ?: Text("Выберите знак зодиака")
     }
 }
