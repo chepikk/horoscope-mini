@@ -4,15 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.horoscope.mini.domain.model.HoroscopeItem
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HoroscopeDao {
-    @Query("SELECT * FROM horoscopes")
-    suspend fun getAllHoroscopes(): List<HoroscopeEntity>
+    @Query("SELECT * FROM horoscope_items")
+    fun getAllHoroscopes(): Flow<List<HoroscopeItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(horoscopes: List<HoroscopeEntity>)
-
-    @Query("DELETE FROM horoscopes")
-    suspend fun clearAll()
+    suspend fun insertAll(items: List<HoroscopeItem>)
 }
