@@ -1,10 +1,14 @@
 package com.horoscope.mini.di
 
-import com.horoscope.mini.data.repository.HoroscopeRepository
-import com.horoscope.mini.data.local.dao.HoroscopeDao
+import android.content.Context
+import androidx.room.Room
+import com.google.gson.Gson
+import com.horoscope.mini.data.local.AppDatabase
+import com.horoscope.mini.data.local.HoroscopeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -14,7 +18,22 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideHoroscopeRepository(dao: HoroscopeDao): HoroscopeRepository {
-        return HoroscopeRepository(dao)
+    fun provideGson(): Gson = Gson()
+
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "horoscope_database"
+        ).build()
+    }
+
+    @Provides
+    fun provideHoroscopeDao(database: AppDatabase): HoroscopeDao {
+        return database.horoscopeDao()
     }
 }
