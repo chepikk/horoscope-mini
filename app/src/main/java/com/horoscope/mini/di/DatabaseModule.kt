@@ -1,5 +1,6 @@
 package com.horoscope.mini.di
 
+import com.horoscope.mini.data.local.AppDatabase
 import com.horoscope.mini.data.local.HoroscopeDao
 import com.horoscope.mini.data.local.PurchaseDao
 import com.horoscope.mini.data.local.UserDao
