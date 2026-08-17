@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.google.gson.Gson
 import com.horoscope.mini.data.local.AppDatabase
-import com.horoscope.mini.data.local.HoroscopeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,11 +28,6 @@ object AppModule {
             context,
             AppDatabase::class.java,
             "horoscope_database"
-        ).build()
-    }
-
-    @Provides
-    fun provideHoroscopeDao(database: AppDatabase): HoroscopeDao {
-        return database.horoscopeDao()
+        ).fallbackToDestructiveMigration().build()
     }
 }
