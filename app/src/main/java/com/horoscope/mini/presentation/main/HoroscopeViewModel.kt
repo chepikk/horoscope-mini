@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.horoscope.mini.data.repository.HoroscopeRepository
 import com.horoscope.mini.domain.model.HoroscopeItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,16 +15,10 @@ class HoroscopeViewModel @Inject constructor(
     private val repository: HoroscopeRepository
 ) : ViewModel() {
 
-    private val _horoscopes = MutableStateFlow<List<HoroscopeItem>>(emptyList())
-    val horoscopes: StateFlow<List<HoroscopeItem>> = _horoscopes
-
-    init {
-        loadHoroscopes()
-    }
-
-    private fun loadHoroscopes() {
-        viewModelScope.launch {
-            _horoscopes.value = repository.getAllHoroscopes()
-        }
-    }
+    val horoscopes: StateFlow<List<HoroscopeItem>> = repository.getAllHoroscopes()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 }
