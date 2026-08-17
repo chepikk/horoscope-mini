@@ -12,9 +12,7 @@ fun NatalChartScreen(
     onBack: () -> Unit,
     viewModel: NatalChartViewModel = hiltViewModel()
 ) {
-    var birthDate by remember { mutableStateOf("") }
-    var birthTime by remember { mutableStateOf("") }
-    var birthCity by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -29,8 +27,8 @@ fun NatalChartScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = birthDate,
-            onValueChange = { birthDate = it },
+            value = uiState.birthDate,
+            onValueChange = viewModel::onBirthDateChange,
             label = { Text("Дата рождения (ДД.ММ.ГГГГ)") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -38,8 +36,8 @@ fun NatalChartScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = birthTime,
-            onValueChange = { birthTime = it },
+            value = uiState.birthTime,
+            onValueChange = viewModel::onBirthTimeChange,
             label = { Text("Время рождения (ЧЧ:ММ)") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -47,8 +45,8 @@ fun NatalChartScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = birthCity,
-            onValueChange = { birthCity = it },
+            value = uiState.birthCity,
+            onValueChange = viewModel::onBirthCityChange,
             label = { Text("Город рождения") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -56,13 +54,34 @@ fun NatalChartScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { /* TODO: расчёт натальной карты */ },
-            modifier = Modifier.fillMaxWidth()
+            onClick = viewModel::calculateNatalChart,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !uiState.isLoading
         ) {
-            Text("Рассчитать натальную карту")
+            if (uiState.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp))
+            } else {
+                Text("Рассчитать натальную карту")
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        uiState.result?.let { result ->
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = result,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
+        uiState.error?.let { error ->
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
             Text("Назад")
