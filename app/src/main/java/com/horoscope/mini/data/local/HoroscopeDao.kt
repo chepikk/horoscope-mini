@@ -5,13 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.horoscope.mini.domain.model.HoroscopeItem
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HoroscopeDao {
-    @Query("SELECT * FROM horoscope_items")
-    fun getAllHoroscopes(): Flow<List<HoroscopeItem>>
+    @Query("SELECT * FROM horoscopes WHERE sign = :sign LIMIT 1")
+    suspend fun getHoroscope(sign: String): HoroscopeItem?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(items: List<HoroscopeItem>)
+    suspend fun insertHoroscope(horoscope: HoroscopeItem)
 }
