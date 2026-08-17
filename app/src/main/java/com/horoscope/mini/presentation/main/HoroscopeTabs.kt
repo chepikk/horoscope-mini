@@ -1,36 +1,15 @@
-package com.horoscope.mini.presentation.main
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-
 @Composable
 fun HoroscopeTabs(viewModel: HoroscopeViewModel = hiltViewModel()) {
-
     val horoscopes by viewModel.horoscopes.collectAsState()
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabs = listOf("Сегодня", "Завтра", "Неделя")
+    var selectedTab by remember { mutableStateOf(0) }
+    val tabs = listOf("Сегодня", "Неделя", "Месяц")
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex = selectedTabIndex) {
+    Column {
+        TabRow(selectedTabIndex = selectedTab) {
             tabs.forEachIndexed { index, title ->
                 Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    selected = selectedTab == index,
+                    onClick = { selectedTab = index },
                     text = { Text(title) }
                 )
             }
@@ -42,15 +21,22 @@ fun HoroscopeTabs(viewModel: HoroscopeViewModel = hiltViewModel()) {
                 .padding(16.dp)
         ) {
             items(horoscopes) { item ->
-                val periodText = when (selectedTabIndex) {
+                val text = when (selectedTab) {
                     0 -> item.today
-                    1 -> item.today
-                    else -> item.week
+                    1 -> item.week
+                    else -> item.month
                 }
-                Text(
-                    text = "${item.sign}: $periodText",
-                    modifier = Modifier.padding(vertical = 12.dp)
-                )
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    elevation = CardDefaults.cardElevation(2.dp)
+                ) {
+                    Text(
+                        text = "${item.sign}\n$text",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }
