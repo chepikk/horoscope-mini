@@ -18,12 +18,20 @@ fun HoroscopeTabs(viewModel: HoroscopeViewModel = hiltViewModel()) {
     val horoscopes = viewModel.horoscopes.value
 
     LaunchedEffect(Unit) {
-        // Загружаем тестовые данные при первом запуске
         if (horoscopes.isEmpty()) {
             val demoData = listOf(
                 HoroscopeItem(sign = "Овен", text = "Сегодня удачный день"),
                 HoroscopeItem(sign = "Телец", text = "Время для важных решений"),
-                HoroscopeItem(sign = "Близнецы", text = "Ожидаются приятные новости")
+                HoroscopeItem(sign = "Близнецы", text = "Ожидаются приятные новости"),
+                HoroscopeItem(sign = "Рак", text = "Хороший день для отдыха"),
+                HoroscopeItem(sign = "Лев", text = "Всё получится"),
+                HoroscopeItem(sign = "Дева", text = "Внимание к деталям"),
+                HoroscopeItem(sign = "Весы", text = "Гармония в отношениях"),
+                HoroscopeItem(sign = "Скорпион", text = "Энергия на максимуме"),
+                HoroscopeItem(sign = "Стрелец", text = "Новые возможности"),
+                HoroscopeItem(sign = "Козерог", text = "Успех в делах"),
+                HoroscopeItem(sign = "Водолей", text = "Интересные идеи"),
+                HoroscopeItem(sign = "Рыбы", text = "Творческий подъём")
             )
             viewModel.loadInitialData(demoData)
         }
