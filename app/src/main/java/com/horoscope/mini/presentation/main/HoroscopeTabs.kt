@@ -1,36 +1,46 @@
 package com.horoscope.mini.presentation.main
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HoroscopeTabs() {
-    val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
+fun HoroscopeTabs(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Сегодня", "Завтра", "Неделя")
 
-    TabRow(selectedTabIndex = pagerState.currentPage) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                text = { Text(title) },
-                selected = pagerState.currentPage == index,
-                onClick = { /* TODO: переключение табов */ }
-            )
+    Column(modifier = modifier) {
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = { Text(title) }
+                )
+            }
         }
-    }
 
-    HorizontalPager(
-        count = tabs.size,
-        state = pagerState
-    ) { page ->
-        // TODO: контент табов
-        Text(text = "Гороскоп: ${tabs[page]}")
+        when (selectedTabIndex) {
+            0 -> Text("Гороскоп на сегодня")
+            1 -> Text("Гороскоп на завтра")
+            2 -> Text("Гороскоп на неделю")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(onClick = { navController.navigate("natal") }) {
+            Text("Натальная карта")
+        }
     }
 }
