@@ -43,9 +43,9 @@ fun HoroscopeTabs(viewModel: HoroscopeViewModel = hiltViewModel()) {
         ) {
             items(horoscopes) { item ->
                 val periodText = when (selectedTabIndex) {
-                    0 -> item.text
-                    1 -> "Завтра: ${item.text}"
-                    else -> "На неделю: ${item.text}"
+                    0 -> item.today
+                    1 -> item.today
+                    else -> item.week
                 }
                 Text(
                     text = "${item.sign}: $periodText",
