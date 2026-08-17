@@ -6,5 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "horoscopes")
 data class HoroscopeItem(
     @PrimaryKey val sign: String,
-    val text: String
+    val today: String,
+    val week: String,
+    val month: String
 )
