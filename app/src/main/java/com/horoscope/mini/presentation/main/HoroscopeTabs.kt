@@ -1,70 +1,36 @@
 package com.horoscope.mini.presentation.main
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.horoscope.mini.presentation.horoscope.HoroscopeViewModel
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HoroscopeTabs(
-    navController: NavController,
-    viewModel: HoroscopeViewModel = hiltViewModel()
-) {
-    val horoscopes by viewModel.horoscopes.collectAsState()
-    var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Сегодня", "Неделя", "Месяц")
+fun HoroscopeTabs() {
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+    val tabs = listOf("Сегодня", "Завтра", "Неделя")
 
-    Column {
-        TabRow(selectedTabIndex = selectedTab) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTab == index,
-                    onClick = { selectedTab = index },
-                    text = { Text(title) }
-                )
-            }
+    TabRow(selectedTabIndex = pagerState.currentPage) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                text = { Text(title) },
+                selected = pagerState.currentPage == index,
+                onClick = { /* TODO: переключение табов */ }
+            )
         }
+    }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            items(horoscopes) { item ->
-                val text = when (selectedTab) {
-                    0 -> item.today
-                    1 -> item.week
-                    else -> item.month
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    elevation = CardDefaults.cardElevation(2.dp)
-                ) {
-                    Text(
-                        text = "${item.sign}\n$text",
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-
-            item {
-                Button(
-                    onClick = { navController.navigate("natal") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp)
-                ) {
-                    Text("Построить натальную карту")
-                }
-            }
-        }
+    HorizontalPager(
+        count = tabs.size,
+        state = pagerState
+    ) { page ->
+        // TODO: контент табов
+        Text(text = "Гороскоп: ${tabs[page]}")
     }
 }
