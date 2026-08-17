@@ -13,7 +13,7 @@ interface HoroscopeDao {
     @Query("SELECT * FROM horoscopes")
     fun getAllHoroscopes(): Flow<List<HoroscopeItem>>
 
-    @Query("SELECT * FROM horoscopes WHERE sign = :sign LIMIT 1")
+    @Query("SELECT * FROM horoscopes WHERE sign = :sign")
     suspend fun getHoroscope(sign: String): HoroscopeItem?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,4 +21,7 @@ interface HoroscopeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHoroscopes(items: List<HoroscopeItem>)
+
+    @Query("SELECT COUNT(*) FROM horoscopes")
+    suspend fun getCount(): Int
 }
