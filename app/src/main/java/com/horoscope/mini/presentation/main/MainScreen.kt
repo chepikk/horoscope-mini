@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,7 +20,7 @@ fun MainScreen() {
             modifier = Modifier.padding(padding)
         ) {
             composable("horoscope") {
-                HoroscopeTabs(viewModel = hiltViewModel())
+                HoroscopeTabs()
             }
             composable("natal") {
                 NatalChartScreen()

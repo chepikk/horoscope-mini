@@ -1,4 +1,4 @@
-package com.horoscope.mini.presentation.horoscope
+package com.horoscope.mini.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
