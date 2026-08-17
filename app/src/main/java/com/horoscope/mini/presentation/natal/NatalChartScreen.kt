@@ -1,19 +1,33 @@
 package com.horoscope.mini.presentation.natal
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun NatalChartScreen(viewModel: NatalChartViewModel = hiltViewModel()) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+fun NatalChartScreen(
+    onBack: () -> Unit,
+    viewModel: NatalChartViewModel = hiltViewModel()
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Text("Натальная карта (в разработке)")
+        Text(
+            text = "Натальная карта",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(onClick = onBack) {
+            Text("Назад")
+        }
+
+        // Здесь позже добавим поля ввода даты рождения и кнопку расчёта
     }
 }

@@ -6,5 +6,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NatalChartViewModel @Inject constructor() : ViewModel() {
-    // Пока заглушка. Позже добавим логику расчёта
+    // Здесь позже будет логика расчёта натальной карты
 }
