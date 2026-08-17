@@ -10,11 +10,11 @@ import javax.inject.Singleton
 class HoroscopeRepository @Inject constructor(
     private val horoscopeDao: HoroscopeDao
 ) {
-    fun getAllHoroscopes(): Flow<List<HoroscopeItem>> {
-        return horoscopeDao.getAllHoroscopes()
+    fun getHoroscope(sign: String): Flow<HoroscopeItem?> {
+        return horoscopeDao.getHoroscope(sign)
     }
 
-    suspend fun insertHoroscopes(items: List<HoroscopeItem>) {
-        horoscopeDao.insertAll(items)
+    suspend fun insertHoroscope(item: HoroscopeItem) {
+        horoscopeDao.insertHoroscope(item)
     }
 }
