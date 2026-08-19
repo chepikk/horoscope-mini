@@ -1,7 +1,6 @@
 package com.example.horoscope.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,18 +13,19 @@ fun AppNavigation(navController: NavHostController) {
         startDestination = "profile"
     ) {
         composable("profile") {
-            ProfileScreen(viewModel = hiltViewModel())
+            ProfileScreen()
         }
         composable("horoscope") {
-            MainHoroscopeScreen(viewModel = hiltViewModel())
+            MainHoroscopeScreen()
         }
         composable("search") {
-            SearchScreen(viewModel = hiltViewModel())
+            SearchScreen()
         }
         composable("compatibility") {
             CompatibilityScreen(
-                viewModel = hiltViewModel(),
-                onSignSelected = { /* позже */ }
+                onSignSelected = { sign ->
+                    navController.navigate("horoscope")
+                }
             )
         }
     }
