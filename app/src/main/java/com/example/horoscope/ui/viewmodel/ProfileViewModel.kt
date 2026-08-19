@@ -1,28 +1,18 @@
-package com.example.horoscope.viewmodel
+package com.example.horoscope.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.horoscope.data.local.User
-import com.example.horoscope.data.repository.UserRepository
-import com.example.horoscope.utils.getZodiacSign
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val repository: UserRepository
-) : ViewModel() {
+class ProfileViewModel @Inject constructor() : ViewModel() {
+    private val _user = MutableStateFlow(User())
+    val user: StateFlow<User> = _user
 
-    fun saveUser(name: String, birthDate: String) {
-        val parts = birthDate.split(".")
-        val day = parts[0].toInt()
-        val month = parts[1].toInt()
-        val sign = getZodiacSign(day, month)
-
-        val user = User(name = name, birthDate = birthDate, zodiacSign = sign)
-        viewModelScope.launch {
-            repository.saveUser(user)
-        }
+    fun updateUser(newUser: User) {
+        _user.value = newUser
     }
 }

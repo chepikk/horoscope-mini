@@ -5,42 +5,58 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.horoscope.data.local.User
 import com.example.horoscope.ui.viewmodel.ProfileViewModel
 
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel) {
-    var name by remember { mutableStateOf("") }
-    var birthDate by remember { mutableStateOf("") }
-    var zodiacSign by remember { mutableStateOf("") }
+fun ProfileScreen(
+    viewModel: ProfileViewModel
+) {
+    val user by viewModel.user.collectAsState()
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Профиль",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = user.name,
+            onValueChange = { newName ->
+                viewModel.updateUser(user.copy(name = newName))
+            },
             label = { Text("Имя") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         OutlinedTextField(
-            value = birthDate,
-            onValueChange = { birthDate = it },
-            label = { Text("Дата рождения (ДД.ММ.ГГГГ)") },
+            value = user.birthDate,
+            onValueChange = { newDate ->
+                viewModel.updateUser(user.copy(birthDate = newDate))
+            },
+            label = { Text("Дата рождения (дд.мм.гггг)") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Знак зодиака: ${user.zodiacSign}",
+            style = MaterialTheme.typography.bodyLarge
+        )
 
-        Text("Знак зодиака: $zodiacSign")
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = {
-            viewModel.saveUser(name, birthDate)
-            zodiacSign = viewModel.getZodiacSign(birthDate)
-        }) {
-            Text("Сохранить")
+        Button(
+            onClick = {
+                // Здесь можно добавить логику сохранения в Room позже
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Сохранить профиль")
         }
     }
 }
