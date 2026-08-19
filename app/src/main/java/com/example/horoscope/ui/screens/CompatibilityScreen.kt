@@ -13,11 +13,17 @@ fun CompatibilityScreen() {
     var result by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Выберите первую знак")
+        Text("Выберите первый знак")
         Text("Выберите второй знак")
-        Button(onClick = { result = "Совместимость $sign1 и $sign2: Хорошая" }) {
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+            result = "Совместимость $sign1 и $sign2: Хорошая"
+        }) {
             Text("Проверить совместимость")
         }
+
         if (result.isNotEmpty()) {
             Text(result, modifier = Modifier.padding(top = 16.dp))
         }
