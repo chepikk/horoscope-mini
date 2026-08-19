@@ -48,6 +48,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    implementation("com.google.android.material:material:1.12.0")
+
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
