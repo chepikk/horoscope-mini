@@ -7,10 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.horoscope.data.local.User
 import com.example.horoscope.ui.viewmodel.ProfileViewModel
+import com.example.horoscope.utils.ZodiacUtils
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel
+    viewModel: ProfileViewModel,
+    onNavigateToMain: () -> Unit   // ← добавили колбэк навигации
 ) {
     val user by viewModel.user.collectAsState()
 
@@ -44,7 +46,7 @@ fun ProfileScreen(
         )
 
         Text(
-            text = "Знак зодиака: ${user.zodiacSign}",
+            text = "Знак зодиака: ${user.zodiacSign.ifEmpty { "—" }}",
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -52,7 +54,13 @@ fun ProfileScreen(
 
         Button(
             onClick = {
-                // Здесь можно добавить логику сохранения в Room позже
+                // Вычисляем знак зодиака и сохраняем
+                val zodiac = ZodiacUtils.getZodiacSign(user.birthDate)
+                val updatedUser = user.copy(zodiacSign = zodiac)
+                viewModel.updateUser(updatedUser)
+                viewModel.saveUser(updatedUser)   // ← нужно будет добавить метод в ViewModel
+
+                onNavigateToMain()                // переход на главный экран
             },
             modifier = Modifier.fillMaxWidth()
         ) {

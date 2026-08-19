@@ -3,10 +3,8 @@ package com.example.horoscope.di
 import android.content.Context
 import androidx.room.Room
 import com.example.horoscope.data.local.AppDatabase
-import com.example.horoscope.data.local.UserDao
 import com.example.horoscope.data.local.HoroscopeDao
-import com.example.horoscope.data.repository.UserRepository
-import com.example.horoscope.data.repository.HoroscopeRepository
+import com.example.horoscope.data.local.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,23 +18,25 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "horoscope_db").build()
-
-    @Provides
-    fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
-
-    @Provides
-    fun provideHoroscopeDao(db: AppDatabase): HoroscopeDao = db.horoscopeDao()
-
-    @Provides
-    @Singleton
-    fun provideUserRepository(userDao: UserDao): UserRepository = UserRepository(userDao)
-
-    @Provides
-    @Singleton
-    fun provideHoroscopeRepository(
-        dao: HoroscopeDao,
+    fun provideDatabase(
         @ApplicationContext context: Context
-    ): HoroscopeRepository = HoroscopeRepository(dao, context)
+    ): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "horoscope_database"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    fun provideUserDao(database: AppDatabase): UserDao {
+        return database.userDao()
+    }
+
+    @Provides
+    fun provideHoroscopeDao(database: AppDatabase): HoroscopeDao {
+        return database.horoscopeDao()
+    }
 }
