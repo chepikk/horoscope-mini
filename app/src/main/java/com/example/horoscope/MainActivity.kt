@@ -45,9 +45,7 @@ fun HoroscopeNavigation() {
         }
 
         composable("main") {
-            MainHoroscopeScreen(
-                viewModel = hiltViewModel()
-            )
+            MainHoroscopeScreen()   // ← убрал viewModel, если экран его не принимает
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.horoscope.ui.screens
 
-import androidx.compose.foundation.layout.*
+import com.example.horoscope.utils.ZodiacUtils
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
