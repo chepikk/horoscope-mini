@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -12,7 +13,7 @@ interface UserDao {
     suspend fun insertUser(user: User)
 
     @Query("SELECT * FROM user LIMIT 1")
-    suspend fun getUser(): User?
+    fun getUser(): Flow<User?>          // ← теперь возвращает Flow, а не suspend
 
     @Query("DELETE FROM user")
     suspend fun deleteAll()

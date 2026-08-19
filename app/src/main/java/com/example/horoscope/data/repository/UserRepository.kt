@@ -5,7 +5,12 @@ import com.example.horoscope.data.local.UserDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserRepository @Inject constructor(private val userDao: UserDao) {
-    fun getUser(): Flow<User?> = userDao.getUser()
-    suspend fun saveUser(user: User) = userDao.insertUser(user)
+class UserRepository @Inject constructor(
+    private val userDao: UserDao
+) {
+    fun getUser(): Flow<User?> = userDao.getUserFlow()
+
+    suspend fun saveUser(user: User) {
+        userDao.insertUser(user)
+    }
 }
