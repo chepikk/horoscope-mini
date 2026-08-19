@@ -7,8 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.horoscope.ui.screens.MainHoroscopeScreen
 import com.example.horoscope.ui.screens.ProfileScreen
-import com.example.horoscope.ui.screens.SearchScreen
-import com.example.horoscope.ui.screens.CompatibilityScreen
 
 @Composable
 fun AppNavigation() {
@@ -25,17 +23,7 @@ fun AppNavigation() {
             )
         }
         composable("main") {
-            MainHoroscopeScreen(
-                onNavigateToProfile = { navController.navigate("profile") },
-                onNavigateToSearch = { navController.navigate("search") },
-                onNavigateToCompatibility = { navController.navigate("compatibility") }
-            )
-        }
-        composable("search") {
-            SearchScreen()
-        }
-        composable("compatibility") {
-            CompatibilityScreen()
+            MainHoroscopeScreen()
         }
     }
 }
