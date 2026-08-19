@@ -1,37 +1,68 @@
-package com.example.horoscope.ui.viewmodel
+package com.example.horoscope.ui.screens
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.horoscope.data.local.User
-import com.example.horoscope.data.repository.UserRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import com.example.horoscope.ui.viewmodel.ProfileViewModel
+import com.example.horoscope.utils.ZodiacUtils
 
-@HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel() {
+@Composable
+fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
+    val currentUser by viewModel.user.collectAsState()
 
-    val user: StateFlow<User?> = userRepository.getUser()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
+    var name by remember { mutableStateOf(currentUser?.name ?: "") }
+    var birthDate by remember { mutableStateOf(currentUser?.birthDate ?: "") }
 
-    fun updateUser(newUser: User) {
-        viewModelScope.launch {
-            userRepository.saveUser(newUser)
+    LaunchedEffect(currentUser) {
+        currentUser?.let {
+            name = it.name
+            birthDate = it.birthDate
         }
     }
 
-    fun saveUser(userToSave: User) {
-        viewModelScope.launch {
-            userRepository.saveUser(userToSave)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text("Профиль", style = MaterialTheme.typography.headlineMedium)
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Имя") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = birthDate,
+            onValueChange = { birthDate = it },
+            label = { Text("Дата рождения (дд.мм.гггг)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        val zodiac = if (birthDate.isNotBlank()) ZodiacUtils.getZodiacSign(birthDate) else "—"
+        Text("Знак зодиака: $zodiac")
+
+        Button(
+            onClick = {
+                if (name.isNotBlank() && birthDate.isNotBlank()) {
+                    val user = User(
+                        name = name,
+                        birthDate = birthDate,
+                        zodiacSign = zodiac
+                    )
+                    viewModel.saveUser(user)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Сохранить профиль")
         }
     }
 }

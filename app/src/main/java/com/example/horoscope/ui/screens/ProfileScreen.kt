@@ -1,30 +1,28 @@
 package com.example.horoscope.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.horoscope.data.local.User
 import com.example.horoscope.ui.viewmodel.ProfileViewModel
 import com.example.horoscope.utils.ZodiacUtils
 
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel,
-    onNavigateToMain: () -> Unit
-) {
-    val user by viewModel.user.collectAsState()
+fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
+    val currentUser by viewModel.user.collectAsState()
+
+    var name by remember { mutableStateOf(currentUser?.name ?: "") }
+    var birthDate by remember { mutableStateOf(currentUser?.birthDate ?: "") }
+
+    LaunchedEffect(currentUser) {
+        currentUser?.let {
+            name = it.name
+            birthDate = it.birthDate
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -32,44 +30,34 @@ fun ProfileScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Профиль",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        Text("Профиль", style = MaterialTheme.typography.headlineMedium)
 
         OutlinedTextField(
-            value = user?.name ?: "",
-            onValueChange = { newName ->
-                user?.let { viewModel.updateUser(it.copy(name = newName)) }
-            },
+            value = name,
+            onValueChange = { name = it },
             label = { Text("Имя") },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
-            value = user?.birthDate ?: "",
-            onValueChange = { newDate ->
-                user?.let { viewModel.updateUser(it.copy(birthDate = newDate)) }
-            },
+            value = birthDate,
+            onValueChange = { birthDate = it },
             label = { Text("Дата рождения (дд.мм.гггг)") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Text(
-            text = "Знак зодиака: ${user?.zodiacSign?.ifEmpty { "—" } ?: "—"}",
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
+        val zodiac = if (birthDate.isNotBlank()) ZodiacUtils.getZodiacSign(birthDate) else "—"
+        Text("Знак зодиака: $zodiac")
 
         Button(
             onClick = {
-                user?.let { currentUser ->
-                    val zodiac = ZodiacUtils.getZodiacSign(currentUser.birthDate)
-                    val updatedUser = currentUser.copy(zodiacSign = zodiac)
-                    viewModel.updateUser(updatedUser)
-                    viewModel.saveUser(updatedUser)
-                    onNavigateToMain()
+                if (name.isNotBlank() && birthDate.isNotBlank()) {
+                    val user = User(
+                        name = name,
+                        birthDate = birthDate,
+                        zodiacSign = zodiac
+                    )
+                    viewModel.saveUser(user)
                 }
             },
             modifier = Modifier.fillMaxWidth()
