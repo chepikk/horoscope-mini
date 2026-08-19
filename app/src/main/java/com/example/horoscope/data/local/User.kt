@@ -3,11 +3,11 @@ package com.example.horoscope.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "users")
+@Entity(tableName = "user")
 data class User(
-    @PrimaryKey val id: Int = 1,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val name: String = "",
     val birthDate: String = "",
-    val zodiacSign: String = "",
-    val email: String = ""
+    val zodiacSign: String = ""
 )
