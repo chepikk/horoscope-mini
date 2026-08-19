@@ -13,7 +13,9 @@ class HoroscopeRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val horoscopeDao: HoroscopeDao
 ) {
-    fun getAllHoroscopes(): Flow<List<HoroscopeItem>> = horoscopeDao.getAllHoroscopes()
+    fun getAllHoroscopes(): Flow<List<HoroscopeItem>> {
+        return horoscopeDao.getAllHoroscopes()
+    }
 
     suspend fun insertHoroscopes(items: List<HoroscopeItem>) {
         horoscopeDao.insertAll(items)
