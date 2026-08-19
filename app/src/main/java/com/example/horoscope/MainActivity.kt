@@ -3,6 +3,12 @@ package com.example.horoscope
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import com.example.horoscope.ui.navigation.AppNavigation
 import com.example.horoscope.ui.theme.HoroscopeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -12,8 +18,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HoroscopeTheme {
-                // Здесь будет навигация (пока заглушка)
-                androidx.compose.material3.Text(text = "Horoscope App")
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    AppNavigation(navController = navController)
+                }
             }
         }
     }
