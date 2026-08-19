@@ -19,14 +19,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HoroscopeTheme {
-                HoroscopeApp()
+                HoroscopeNavigation()
             }
         }
     }
 }
 
 @Composable
-fun HoroscopeApp() {
+fun HoroscopeNavigation() {
     val navController = rememberNavController()
 
     NavHost(
