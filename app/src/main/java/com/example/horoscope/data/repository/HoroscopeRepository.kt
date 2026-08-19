@@ -3,21 +3,22 @@ package com.example.horoscope.data.repository
 import android.content.Context
 import com.example.horoscope.data.local.HoroscopeDao
 import com.example.horoscope.data.local.HoroscopeItem
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class HoroscopeRepository @Inject constructor(
-    private val dao: HoroscopeDao,
-    private val context: Context
+    @ApplicationContext private val context: Context,
+    private val horoscopeDao: HoroscopeDao
 ) {
-    fun getHoroscope(sign: String, date: String): Flow<HoroscopeItem?> =
-        dao.getHoroscope(sign, date)
 
-    suspend fun loadHoroscopesFromJson() {
-        val json = context.assets.open("horoscopes.json").bufferedReader().use { it.readText() }
-        val list = Gson().fromJson<List<HoroscopeItem>>(json, object : TypeToken<List<HoroscopeItem>>() {}.type)
-        dao.insertAll(list)
+    fun getHoroscopes(): Flow<List<HoroscopeItem>> {
+        return horoscopeDao.getAllHoroscopes()
+    }
+
+    suspend fun insertHoroscopes(items: List<HoroscopeItem>) {
+        horoscopeDao.insertAll(items)
     }
 }
