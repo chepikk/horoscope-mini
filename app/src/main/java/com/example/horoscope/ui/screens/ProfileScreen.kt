@@ -11,7 +11,10 @@ import com.example.horoscope.ui.viewmodel.ProfileViewModel
 import com.example.horoscope.utils.ZodiacUtils
 
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
+fun ProfileScreen(
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onNavigateToMain: () -> Unit = {}
+) {
     val currentUser by viewModel.user.collectAsState()
 
     var name by remember { mutableStateOf(currentUser?.name ?: "") }
@@ -58,6 +61,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                         zodiacSign = zodiac
                     )
                     viewModel.saveUser(user)
+                    onNavigateToMain()
                 }
             },
             modifier = Modifier.fillMaxWidth()
