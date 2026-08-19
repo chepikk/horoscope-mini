@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "horoscope-mini"
-include ':app'
+include(":app")
