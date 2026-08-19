@@ -3,37 +3,35 @@ package com.example.horoscope.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.horoscope.data.local.User
-import com.example.horoscope.data.local.UserDao
+import com.example.horoscope.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userDao: UserDao
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _user = MutableStateFlow(User())
-    val user: StateFlow<User> = _user.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            userDao.getUser()?.let {
-                _user.value = it
-            }
-        }
-    }
+    val user: StateFlow<User?> = userRepository.getUser()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
 
     fun updateUser(newUser: User) {
-        _user.value = newUser
+        viewModelScope.launch {
+            userRepository.saveUser(newUser)
+        }
     }
 
     fun saveUser(userToSave: User) {
         viewModelScope.launch {
-            userDao.insertUser(userToSave)
+            userRepository.saveUser(userToSave)
         }
     }
 }
