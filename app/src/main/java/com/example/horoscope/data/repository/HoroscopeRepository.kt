@@ -1,4 +1,3 @@
-cat > app/src/main/java/com/example/horoscope/data/repository/HoroscopeRepository.kt << 'EOF'
 package com.example.horoscope.data.repository
 
 import com.example.horoscope.data.local.HoroscopeDao
@@ -24,4 +23,3 @@ class HoroscopeRepository @Inject constructor(
         horoscopeDao.insertAll(items)
     }
 }
-EOF
