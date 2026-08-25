@@ -20,4 +20,8 @@ class HoroscopeRepository @Inject constructor(
     suspend fun insertHoroscopes(items: List<HoroscopeItem>) {
         horoscopeDao.insertAll(items)
     }
+
+    suspend fun getHoroscope(zodiacSign: String, period: String): HoroscopeItem? {
+        return horoscopeDao.getHoroscopeBySignAndPeriod(zodiacSign, period)
+    }
 }
