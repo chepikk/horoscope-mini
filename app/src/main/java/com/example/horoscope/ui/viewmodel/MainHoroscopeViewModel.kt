@@ -1,7 +1,5 @@
 package com.example.horoscope.ui.viewmodel
-suspend fun getHoroscope(sign: String, period: String): HoroscopeItem? {
-    return horoscopeDao.getHoroscope(sign, period)
-}
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.horoscope.data.local.HoroscopeItem
