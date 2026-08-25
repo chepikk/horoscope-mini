@@ -15,6 +15,6 @@ interface HoroscopeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<HoroscopeItem>)
 
-    @Query("SELECT * FROM horoscopes WHERE zodiacSign = :zodiacSign AND period = :period LIMIT 1")
+    @Query("SELECT * FROM horoscopes WHERE `Знак зодиака` = :zodiacSign AND period = :period LIMIT 1")
     suspend fun getHoroscopeBySignAndPeriod(zodiacSign: String, period: String): HoroscopeItem?
 }
