@@ -1,51 +1,34 @@
-package com.example.horoscope.ui.viewmodel
+package com.example.horoscope.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.horoscope.data.local.HoroscopeItem
 import com.example.horoscope.data.repository.HoroscopeRepository
-import com.example.horoscope.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainHoroscopeViewModel @Inject constructor(
-    private val horoscopeRepository: HoroscopeRepository,
-    private val userRepository: UserRepository
+class HoroscopeViewModel @Inject constructor(
+    private val repository: HoroscopeRepository
 ) : ViewModel() {
 
     private val _horoscope = MutableStateFlow<HoroscopeItem?>(null)
-    val horoscope: StateFlow<HoroscopeItem?> = _horoscope.asStateFlow()
+    val horoscope: StateFlow<HoroscopeItem?> = _horoscope
 
-    private var currentZodiac: String = ""
-
-    init {
+    fun loadHoroscope(sign: String, date: String) {
         viewModelScope.launch {
-            userRepository.getUser().collect { user ->
-                user?.zodiacSign?.let {
-                    currentZodiac = it
-                    loadHoroscope(0)
-                }
+            repository.getHoroscope(sign, date).collect {
+                _horoscope.value = it
             }
         }
     }
 
-    fun loadHoroscope(tabIndex: Int) {
-        if (currentZodiac.isBlank()) return
-
-        val period = when (tabIndex) {
-            0 -> "today"
-            1 -> "tomorrow"
-            2 -> "week"
-            else -> "today"
-        }
-
+    fun loadInitialData() {
         viewModelScope.launch {
-            _horoscope.value = horoscopeRepository.getHoroscope(currentZodiac, period)
+            repository.loadHoroscopesFromJson()
         }
     }
 }
