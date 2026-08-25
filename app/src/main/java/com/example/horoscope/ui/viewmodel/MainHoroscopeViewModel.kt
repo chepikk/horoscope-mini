@@ -37,15 +37,8 @@ class MainHoroscopeViewModel @Inject constructor(
     fun loadHoroscope(tabIndex: Int) {
         if (currentZodiac.isBlank()) return
 
-        val period = when (tabIndex) {
-            0 -> "today"
-            1 -> "tomorrow"
-            2 -> "week"
-            else -> "today"
-        }
-
         viewModelScope.launch {
-            _horoscope.value = horoscopeRepository.getHoroscope(currentZodiac, period)
+            _horoscope.value = horoscopeRepository.getHoroscopeBySign(currentZodiac)
         }
     }
 }
